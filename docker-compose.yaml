@@ -1,0 +1,64 @@
+---
+  version: "3.5"
+  services: 
+    redis-master-1: 
+      image: "redis:5-alpine3.8"
+      container_name: "redis-master-1"
+      command: "redis-server  --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --cluster-require-full-coverage no"
+      ports: 
+        - "6381:6379"
+      networks: 
+        redis_net: 
+          ipv4_address: "100.0.16.1"
+    redis-master-2: 
+      image: "redis:5-alpine3.8"
+      container_name: "redis-master-2"
+      command: "redis-server  --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --cluster-require-full-coverage no"
+      ports: 
+        - "6382:6379"
+      networks: 
+        redis_net: 
+          ipv4_address: "100.0.16.2"
+    redis-master-3: 
+      image: "redis:5-alpine3.8"
+      container_name: "redis-master-3"
+      command: "redis-server  --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --cluster-require-full-coverage no"
+      ports: 
+        - "6383:6379"
+      networks: 
+        redis_net: 
+          ipv4_address: "100.0.16.3"
+    redis-slave-1: 
+      image: "redis:5-alpine3.8"
+      container_name: "redis-slave-1"
+      command: "redis-server  --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --cluster-require-full-coverage no"
+      ports: 
+        - "6384:6379"
+      networks: 
+        redis_net: 
+          ipv4_address: "100.0.16.4"
+    redis-slave-2: 
+      image: "redis:5-alpine3.8"
+      container_name: "redis-slave-2"
+      command: "redis-server  --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --cluster-require-full-coverage no"
+      ports: 
+        - "6385:6379"
+      networks: 
+        redis_net: 
+          ipv4_address: "100.0.16.5"
+    redis-slave-3: 
+      image: "redis:5-alpine3.8"
+      container_name: "redis-slave-3"
+      command: "redis-server  --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --cluster-require-full-coverage no"
+      ports: 
+        - "6386:6379"
+      networks: 
+        redis_net: 
+          ipv4_address: "100.0.16.6"
+  networks: 
+    redis_net: 
+      driver: "bridge"
+      ipam: 
+        config: 
+          - 
+            subnet: "100.0.16.0/16"

@@ -1,0 +1,54 @@
+version: "3.1"
+services:
+  redis-master-1:
+    image: redis:5-alpine3.8
+    networks:
+      redisnet:
+        ipv4_address: 10.0.0.2
+    command: sh -c "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000"
+  redis-master-2:
+    image: redis:5-alpine3.8
+    networks:
+      redisnet:
+        ipv4_address: 10.0.0.3
+    depends_on:
+      - redis-master-1
+    command: sh -c "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000"
+  redis-master-3:
+    image: redis:5-alpine3.8
+    command: sh -c "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000"
+    networks:
+      redisnet:
+        ipv4_address: 10.0.0.4
+    depends_on:
+      - redis-master-2
+  redis-slave-1:
+    image: redis:5-alpine3.8
+    command: sh -c "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000"
+    networks:
+      redisnet:
+        ipv4_address: 10.0.0.5
+    depends_on:
+      - redis-master-3
+  redis-slave-2:
+    image: redis:5-alpine3.8
+    command: sh -c "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000"
+    networks:
+      redisnet:
+        ipv4_address: 10.0.0.6
+    depends_on:
+      - redis-master-3
+  redis-slave-3:
+    image: redis:5-alpine3.8
+    command: sh -c "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000"
+    networks:
+      redisnet:
+        ipv4_address: 10.0.0.7
+    depends_on:
+      - redis-master-3
+networks:
+  redisnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/16

@@ -1,0 +1,35 @@
+version: '3'
+services:
+  redis-master-1:
+    container_name: docker-redis-master-1
+    image: redis:5-alpine3.8
+    volumes:
+      - /home/igor/projects/docker-redis-cluster/master/001/redis.conf:/usr/local/etc/redis/redis.conf
+    command:  redis-server /usr/local/etc/redis/redis.conf --port 6379
+    ports:
+      - "6380:6379"
+  redis-slave:
+    container_name: docker-redis-slave
+    image: redis:5-alpine3.8
+    command: redis-server --port 6379 --slaveof redis-master-1 6379
+    links:
+      - redis-master-1
+    ports:
+    - "6381:6379"
+
+  redis-master-2:
+    container_name: docker-redis-master-2
+    image: redis:5-alpine3.8
+    volumes:
+      - /home/igor/projects/docker-redis-cluster/master/001/redis.conf:/usr/local/etc/redis/redis.conf
+    command:  redis-server /usr/local/etc/redis/redis.conf --port 6379
+    ports:
+      - "6382:6379"
+    redis-slave:
+      container_name: docker-redis-slave
+      image: redis:5-alpine3.8
+      command: redis-server --port 6379 --slaveof redis-master-1 6379
+      links:
+        - redis-master-2
+      ports:
+        - "6384:6379"
